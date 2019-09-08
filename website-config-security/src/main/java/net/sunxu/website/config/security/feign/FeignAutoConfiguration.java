@@ -87,8 +87,7 @@ public class FeignAutoConfiguration {
 
                 String payload = new String(Base64.getDecoder().decode(token.split("\\.")[1]));
                 long exp = Long.parseLong("" + objectMapper.readValue(payload, Map.class).get("exp"));
-
-                expireHolder.set(exp);
+                expireHolder.set(exp * 1000);
                 tokenHolder.set(AuthTokenDefine.TOKEN_PREFIX + token);
             } catch (Exception err) {
                 log.warn("error in refresh service token : " + err);
