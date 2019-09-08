@@ -1,0 +1,5 @@
+website.security.rbac:
+  enabled: false
+  permissions:
+    classLevel:
+      C: admin

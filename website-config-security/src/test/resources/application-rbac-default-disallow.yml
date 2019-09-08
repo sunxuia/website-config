@@ -1,0 +1,2 @@
+website.security.rbac:
+  defaultAllow: false

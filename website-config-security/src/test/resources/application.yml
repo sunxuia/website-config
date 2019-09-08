@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: test-app
+
+website.app:
+  id: 100
+  password: 100
+
+feign:
+  httpclient:
+    enabled: true

@@ -1,0 +1,11 @@
+website.security.rbac:
+  permissions:
+    classLevel:
+      A: admin
+      B: admin,normal
+      C:
+        - admin
+        - normal
+      D.D2: []
+      E: '!admin'
+      '*': '*'

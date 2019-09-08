@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  net.sunxu.website.config.security.feign.FeignAutoConfiguration,\
+  net.sunxu.website.config.security.authentication.WebsiteSecurityAutoConfiguration,\
+  net.sunxu.website.config.security.rbac.RbacAutoConfiguration
