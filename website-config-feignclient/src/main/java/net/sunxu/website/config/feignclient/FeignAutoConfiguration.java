@@ -2,6 +2,8 @@ package net.sunxu.website.config.feignclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.RequestInterceptor;
+import feign.codec.Encoder;
+import feign.codec.ErrorDecoder;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -9,9 +11,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -106,5 +111,15 @@ public class FeignAutoConfiguration {
                 requestTemplate.header(AUTHORIZATION, tokenHolder.get());
             }
         };
+    }
+
+    @Bean
+    public Encoder encoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+        return new CustomEncoder(new SpringEncoder(messageConverters));
+    }
+
+    @Bean
+    public ErrorDecoder feignErrorDecoder() {
+        return new FeignErrorDecoder();
     }
 }
