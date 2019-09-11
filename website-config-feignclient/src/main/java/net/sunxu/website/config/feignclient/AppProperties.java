@@ -1,4 +1,4 @@
-package net.sunxu.website.config.security;
+package net.sunxu.website.config.feignclient;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package net.sunxu.website.config.security.feign;
+package net.sunxu.website.config.feignclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.RequestInterceptor;
@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
-import net.sunxu.website.config.security.AppProperties;
-import net.sunxu.website.config.security.authentication.AuthTokenDefine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -22,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 @Configuration
 public class FeignAutoConfiguration {
+
+    private static final String AUTHORIZATION = "Authorization";
 
     private final long RE_GET_INTERVAL = 5 * 60 * 1000L;
 
@@ -54,12 +54,11 @@ public class FeignAutoConfiguration {
         restTemplate.setInterceptors(List.of((request, body, execution) -> {
             HttpHeaders headers = request.getHeaders();
             if (request.getURI().getHost().equals(AppProperties.APP_SERVICE)) {
-                headers.add(AuthTokenDefine.TOKEN_HEADER_NAME, basicToken);
+                headers.add(AUTHORIZATION, basicToken);
             } else {
                 checkRefresh();
-                headers.add(AuthTokenDefine.TOKEN_HEADER_NAME, tokenHolder.get());
+                headers.add(AUTHORIZATION, tokenHolder.get());
             }
-            headers.remove("Content-Type");
             return execution.execute(request, body);
         }));
         return restTemplate;
@@ -88,7 +87,7 @@ public class FeignAutoConfiguration {
                 String payload = new String(Base64.getDecoder().decode(token.split("\\.")[1]));
                 long exp = Long.parseLong("" + objectMapper.readValue(payload, Map.class).get("exp"));
                 expireHolder.set(exp * 1000);
-                tokenHolder.set(AuthTokenDefine.TOKEN_PREFIX + token);
+                tokenHolder.set("Bearer " + token);
             } catch (Exception err) {
                 log.warn("error in refresh service token : " + err);
                 if (tokenHolder.get() == null) {
@@ -103,8 +102,8 @@ public class FeignAutoConfiguration {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             checkRefresh();
-            if (!requestTemplate.headers().containsKey(AuthTokenDefine.TOKEN_HEADER_NAME)) {
-                requestTemplate.header(AuthTokenDefine.TOKEN_HEADER_NAME, tokenHolder.get());
+            if (!requestTemplate.headers().containsKey(AUTHORIZATION)) {
+                requestTemplate.header(AUTHORIZATION, tokenHolder.get());
             }
         };
     }

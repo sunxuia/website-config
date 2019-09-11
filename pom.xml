@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>website-config-security</module>
+        <module>website-config-feignclient</module>
     </modules>
 
     <artifactId>website-config</artifactId>

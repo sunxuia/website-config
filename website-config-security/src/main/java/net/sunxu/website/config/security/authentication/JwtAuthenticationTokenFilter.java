@@ -4,9 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.cert.CertificateFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -17,9 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import net.sunxu.website.config.security.AppProperties;
-import net.sunxu.website.config.security.feign.AppServiceAdaptor;
-import org.bouncycastle.util.encoders.Base64;
+import net.sunxu.website.app.dto.PublicKeyDTO;
+import net.sunxu.website.config.feignclient.AppProperties;
+import net.sunxu.website.config.feignclient.AppServiceAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,14 +43,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @PostConstruct
     public void initialPublicKey() {
+        PublicKeyDTO publicKey = null;
         try {
-            var response = appService.getPublicKey();
-            var inputStream = new ByteArrayInputStream(Base64.decode(response.getPublicKey()));
-            CertificateFactory certificatefactory = CertificateFactory.getInstance(response.getType());
-            var cert = certificatefactory.generateCertificate(inputStream);
-            parser.setSigningKey(cert.getPublicKey());
-        } catch (Exception err) {
-            throw new RuntimeException(err);
+            publicKey = appService.getPublicKey();
+            parser.setSigningKey(publicKey.readPublicKey());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

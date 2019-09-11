@@ -4,7 +4,7 @@ package net.sunxu.website.config.security.feign;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.sunxu.website.app.dto.PublicKeyDTO;
-import net.sunxu.website.app.feignclient.AppService;
+import net.sunxu.website.app.feignclient.AppFeignClient;
 import net.sunxu.website.test.helputil.authtoken.AuthTokenBuilder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.core.annotation.Order;
 public class TestConfiguration {
 
     @MockBean
-    private AppService appService;
+    private AppFeignClient appService;
 
     @Autowired
     public void injectPublicKey() throws Exception {

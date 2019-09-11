@@ -1,10 +1,9 @@
-package net.sunxu.website.config.security.feign;
+package net.sunxu.website.config.feignclient;
 
 import java.util.function.Supplier;
 import lombok.extern.log4j.Log4j2;
 import net.sunxu.website.app.dto.PublicKeyDTO;
 import net.sunxu.website.app.feignclient.AppFeignClient;
-import net.sunxu.website.config.security.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Log4j2
