@@ -3,6 +3,7 @@ package net.sunxu.website.config.feignclient.exception;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import net.sunxu.website.config.feignclient.exceptionhandler.ErrorDTO;
 import org.springframework.http.HttpStatus;
 
 public class ServiceException extends RuntimeException {
@@ -18,8 +19,18 @@ public class ServiceException extends RuntimeException {
     private List<String> errors;
 
     public ServiceException(HttpStatus httpStatus, String message, Throwable cause) {
-        super(message, cause);
+        super(wrapMessage(message, cause), cause);
         this.httpStatus = httpStatus;
+    }
+
+    private static String wrapMessage(String message, Throwable cause) {
+        if (message == null && cause != null) {
+            if (cause.getLocalizedMessage() != null) {
+                return cause.getLocalizedMessage();
+            }
+            return cause.getMessage();
+        }
+        return message;
     }
 
     public static ServiceException newException(HttpStatus httpStatus, String message, Object... paras) {

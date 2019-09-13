@@ -3,22 +3,20 @@ package net.sunxu.website.config.security.authentication;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import net.sunxu.website.app.dto.PublicKeyDTO;
 import net.sunxu.website.config.feignclient.AppProperties;
-import net.sunxu.website.config.feignclient.AppServiceAdaptor;
+import net.sunxu.website.help.util.ObjectHelpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,27 +28,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Log4j2
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    private final JwtParser parser = Jwts.parser();
-
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
             new WebAuthenticationDetailsSource();
 
     @Autowired
-    private AppServiceAdaptor appService;
+    @Qualifier("serviceJwtParser")
+    private JwtParser parser;
 
     @Autowired
     private AppProperties properties;
-
-    @PostConstruct
-    public void initialPublicKey() {
-        PublicKeyDTO publicKey = null;
-        try {
-            publicKey = appService.getPublicKey();
-            parser.setSigningKey(publicKey.readPublicKey());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -112,8 +98,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         if (log.isDebugEnabled()) {
-            log.info(String.format("Authentication success: id: %d, name: %s, token: %s",
-                    principal.getId(), principal.getName(), credentials));
+            log.info(String.format("Authentication success: id: %d, name: %d, userName: %s, token: %s",
+                    principal.getId(), principal.getName(), principal.getUserName(), credentials));
         }
     }
 
@@ -121,7 +107,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private UserPrincipal convertToUserprincipal(Claims claims) {
         UserPrincipal principal = new UserPrincipal();
         principal.setId(claims.get("id", Long.class));
-        principal.setName(claims.get("name", String.class));
+        principal.setUserName(claims.get("name", String.class));
+        principal.setService(ObjectHelpUtils.nvl(claims.get("service", Boolean.class), Boolean.FALSE));
         var roles = (List<String>) claims.get("roles", List.class);
         if (roles == null) {
             principal.setRoles(Collections.emptySet());

@@ -1,9 +1,8 @@
-package net.sunxu.website.config.feignclient;
+package net.sunxu.website.config.feignclient.exceptionhandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import net.sunxu.website.config.feignclient.exception.ErrorDTO;
 import net.sunxu.website.config.feignclient.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

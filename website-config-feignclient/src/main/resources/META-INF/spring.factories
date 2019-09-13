@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  net.sunxu.website.config.feignclient.FeignAutoConfiguration
+  net.sunxu.website.config.feignclient.FeignAutoConfiguration,\
+  net.sunxu.website.config.feignclient.FeignAuthorizationAutoConfiguration

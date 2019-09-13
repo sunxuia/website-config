@@ -46,7 +46,7 @@ public class SecurityConfigTest {
 
         var principal = objectMapper.readValue(res, UserPrincipal.class);
         Assert.assertEquals(Long.valueOf(100), principal.getId());
-        Assert.assertEquals("admin", principal.getName());
+        Assert.assertEquals("admin", principal.getUserName());
         Assert.assertArrayEquals(new String[]{"ROLE_TEST"}, principal.getRoles().toArray(new String[1]));
     }
 

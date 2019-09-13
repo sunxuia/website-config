@@ -13,7 +13,9 @@ import java.util.Collections;
 import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
-// 仿照 SpringFormEncoder 做的修改, 添加对MultipartFile[] 类型和Content-Type 的修改
+/**
+ * 仿照 SpringFormEncoder 做的修改, 添加对MultipartFile[] 类型和Content-Type 的修改
+ */
 public class CustomEncoder extends FormEncoder {
 
     public CustomEncoder() {

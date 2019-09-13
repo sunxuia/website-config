@@ -23,7 +23,7 @@ public abstract class AbstractTest {
     protected void setUserWithRole(String... roleNames) {
         UserPrincipal principal = new UserPrincipal();
         principal.setId(100L);
-        principal.setName("unit-test");
+        principal.setUserName("unit-test");
         principal.setRoles(List.of(roleNames));
 
         Set<GrantedAuthority> auths = principal.getRoles().stream()

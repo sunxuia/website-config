@@ -1,5 +1,7 @@
-package net.sunxu.website.config.feignclient.exception;
+package net.sunxu.website.config.feignclient.exceptionhandler;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 @ToString
 public class ErrorDTO implements Serializable {
 
+    @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
     private LocalDateTime timestamp;
 
     private String path;

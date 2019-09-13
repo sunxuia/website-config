@@ -67,7 +67,7 @@ public class RbacAspect {
                 UserPrincipal user = (UserPrincipal) principal;
                 if (debug) {
                     logger.info("user [{}][{}] trying to access method [{}#{}]",
-                            user.getName(), RequestHelpUtils.getIpAddress(request), targetClass,
+                            user.getUserName(), RequestHelpUtils.getIpAddress(request), targetClass,
                             targetMethod.getName());
                 }
             } else {
