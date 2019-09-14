@@ -40,7 +40,7 @@ public class TestConfiguration {
     }
 
     @Autowired
-    public void injectServiceToken(@Value("${spring.application.userName}") String applicationName) throws Exception {
+    public void injectServiceToken(@Value("${spring.application.name}") String applicationName) throws Exception {
         var token = new AuthTokenBuilder().name(applicationName).id(100L).exipreSeconds(100L).service(true).build();
         AtomicInteger count = new AtomicInteger(1);
         Mockito.when(appService.getServiceToken())
